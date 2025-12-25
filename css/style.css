@@ -148,7 +148,7 @@ main {
     grid-area: oj;
 }
 
-.outline-cel, .cel {
+.outline-cell, .cell {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,7 +164,7 @@ main {
     grid-template-columns: repeat(10, 1fr);
 }
 
-.cel {
+.cell {
     border: 1px solid var(--outline-color);
 }
 

@@ -6,6 +6,7 @@ let rotation = false;
 let computer = true;
 let player1 = true;
 let gameState = false;
+let canShoot = false;
 
 const shipsPlaced = {
     patrol: false,
@@ -25,24 +26,28 @@ function setup() {
         const cellsX = [];
         for (let j = 1; j <= 10; j++) {
 
-            const celDiv = document.createElement('div');
-            celDiv.classList.add('cel');
-            celDiv.style.gridArea = `${j} / ${i} / ${j + 1} / ${i + 1}`;
-            battleshipLayout.appendChild(celDiv);
-            celDiv.addEventListener('click', () => {
-                placeShip(i, j, false);
+            const cellDiv = document.createElement('div');
+            cellDiv.classList.add('cell');
+            cellDiv.style.gridArea = `${j} / ${i} / ${j + 1} / ${i + 1}`;
+            battleshipLayout.appendChild(cellDiv);
+            cellDiv.addEventListener('click', () => {
+                if (gameState) {
+                    shoot(i, j);
+                } else {
+                    placeShip(i, j, false);
+                }
             });
-            celDiv.addEventListener('mouseover', () => {
+            cellDiv.addEventListener('mouseover', () => {
                 hoverShip(i, j);
             });
-            celDiv.addEventListener('mouseout', () => {
+            cellDiv.addEventListener('mouseout', () => {
                 removeHover();
             });
-            celDiv.addEventListener('contextmenu', (e) => {
+            cellDiv.addEventListener('contextmenu', (e) => {
                 changeRotation(e, i, j);
             });
             cellsX[j] = {
-                element: celDiv,
+                element: cellDiv,
                 shipP1: false,
                 shipP2: false,
                 shotP1: false,
@@ -55,10 +60,10 @@ function setup() {
     //template setup
     for (let i = 1; i <= 8; i++) {
         for (let j = 1; j <= 5; j++) {
-            const cel = document.createElement('div');
-            cel.classList.add('cel');
-            cel.style.gridArea = `${i} / ${j} / ${i + 1} / ${j + 1}`;
-            templateLayout.appendChild(cel);
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.style.gridArea = `${i} / ${j} / ${i + 1} / ${j + 1}`;
+            templateLayout.appendChild(cell);
         }
     }
     for (let i = 0; i < templateShips.length; i++) {
@@ -107,6 +112,8 @@ function checkShipsPlaced() {
         }
     }
     if (used) {
+        alert("Alle schepen geplaatst");
+        //TODO: better alert
         switchPlayer();
     }
 }
@@ -209,8 +216,19 @@ function changeRotation(e, x, y) {
 }
 
 function switchPlayer() {
+    canShoot = false;
     player1 = !player1;
-    if (gameState){
+    console.log(player1);
+    if (gameState) {
+        setTimeout(() => {
+            changeBoard();
+            if (computer && !player1) {
+                shootComputer();
+            } else {
+                canShoot = true;
+            }
+        }, 500);
+
         return;
     }
     if (computer) {
@@ -243,11 +261,7 @@ function placeComputerShips() {
     ];
     for (let i = 0; i < ships.length; i++) {
         let placed = false;
-        if (Math.round(Math.random()) === 1){
-            rotation = true;
-        } else {
-            rotation = false;
-        }
+        rotation = Math.round(Math.random()) === 1;
         ship = ships[i];
         while (!placed) {
             const x = Math.ceil(Math.random() * 10);
@@ -258,42 +272,78 @@ function placeComputerShips() {
             }
         }
     }
+    alert("computer heeft alle schepen geplaatst");
+    // TODO: better alert
     startGame();
 }
 
-function startGame(){
-    player1 = true;
-    for (let i = 1; i <= 10; i++) {
-        for (let j = 1; j <= 10; j++) {
-            const celDiv = cells[i][j].element;
-            celDiv.removeEventListener('click', () => {
-                placeShip(i, j, false);
-            });
-            celDiv.removeEventListener('mouseover', () => {
-                hoverShip(i, j);
-            });
-            celDiv.removeEventListener('mouseout', () => {
-                removeHover();
-            });
-            celDiv.removeEventListener('contextmenu', (e) => {
-                changeRotation(e, i, j);
-            });
-            celDiv.addEventListener('click', () =>{
-                shoot(i, j);
-            });
-        }
-    }
+function startGame() {
+    gameState = true;
+    switchPlayer();
 }
 
-function shoot(x, y){
-    if (computer && !player1){
+function shoot(x, y) {
+    if (computer && !player1 || !canShoot) {
         return;
     }
     const cell = cells[x][y];
-    if (player1 && cell.shotP1){
-        alert('already shot');
-        //TODO: better alert
-    } else if (player1 && cell.shipP2) {
-        cells[x][y].element.classList.add('shot', 'hit');
+    if (player1) {
+        if (cell.shotP1) {
+            alert('already shot');
+            //TODO: better alert
+            return;
+        }
+
+        cell.shotP1 = true;
+        cells[x][y].element.classList.add('shot');
+
+        if (cell.shipP2) {
+            cells[x][y].element.classList.add('hit');
+        }
+
+    }
+    switchPlayer();
+}
+
+function shootComputer() {
+    const notShotCells = [];
+    for (let i = 1; i < cells.length; i++) {
+        for (let j = 1; j < cells[i].length; j++) {
+            if (!cells[i][j].shotP2) {
+                notShotCells.push(cells[i][j]);
+            }
+        }
+    }
+    const random = Math.floor(Math.random() * notShotCells.length);
+    const cell = notShotCells[random];
+    cell.shotP2 = true;
+    cell.element.classList.add('shot');
+    if (cell.shipP1) {
+        cell.element.classList.add('hit');
+    }
+    switchPlayer();
+}
+
+function changeBoard() {
+    for (let i = 1; i < cells.length; i++) {
+        for (let j = 1; j < cells[i].length; j++) {
+            const cell = cells[i][j];
+            cell.element.classList = "cell";
+            if (player1) {
+                if (cell.shotP1) {
+                    cell.element.classList.add('shot');
+                    if (cell.shipP2) {
+                        cell.element.classList.add('hit');
+                    }
+                }
+            } else {
+                if (cell.shotP2) {
+                    cell.element.classList.add('shot');
+                    if (cell.shipP1) {
+                        cell.element.classList.add('hit');
+                    }
+                }
+            }
+        }
     }
 }
