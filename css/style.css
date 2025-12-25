@@ -1,0 +1,241 @@
+:root {
+    --primary-color: #009eff;
+    --secondary-color: lightgrey;
+    --text-color: white;
+    --outline-color: black;
+    --ship-color: grey;
+    --mis-color: yellow;
+    --hit-color: red;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header img {
+    height: 100%;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns:1fr 2fr 1fr;
+    grid-template-rows: 100px 1fr 50px;
+    grid-template-areas:
+    "hd hd hd"
+    "as1 mn as2"
+    "ft ft ft";
+    height: 100vh;
+    background-color: var(--secondary-color);
+    gap: 10px;
+}
+
+header {
+    grid-area: hd;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    align-items: center;
+}
+
+main {
+    grid-area: mn;
+    background-color: var(--primary-color);
+    padding: 20px 30px 30px 20px;
+}
+
+.outline {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 0.5fr repeat(10, 1fr);
+    grid-template-columns: 0.5fr repeat(10, 1fr);
+    grid-template-areas:
+    "em o1 o2 o3 o4 o5 o6 o7 o8 o9 o10"
+    "oa bs bs bs bs bs bs bs bs bs bs"
+    "ob bs bs bs bs bs bs bs bs bs bs"
+    "oc bs bs bs bs bs bs bs bs bs bs"
+    "od bs bs bs bs bs bs bs bs bs bs"
+    "oe bs bs bs bs bs bs bs bs bs bs"
+    "of bs bs bs bs bs bs bs bs bs bs"
+    "og bs bs bs bs bs bs bs bs bs bs"
+    "oh bs bs bs bs bs bs bs bs bs bs"
+    "oi bs bs bs bs bs bs bs bs bs bs"
+    "oj bs bs bs bs bs bs bs bs bs bs";
+}
+
+.empty {
+    grid-area: em;
+}
+
+.outline-1 {
+    grid-area: o1;
+}
+
+.outline-2 {
+    grid-area: o2;
+}
+
+.outline-3 {
+    grid-area: o3;
+}
+
+.outline-4 {
+    grid-area: o4;
+}
+
+.outline-5 {
+    grid-area: o5;
+}
+
+.outline-6 {
+    grid-area: o6;
+}
+
+.outline-7 {
+    grid-area: o7;
+}
+
+.outline-8 {
+    grid-area: o8;
+}
+
+.outline-9 {
+    grid-area: o9;
+}
+
+.outline-10 {
+    grid-area: o10;
+}
+
+.outline-a {
+    grid-area: oa;
+}
+
+.outline-b {
+    grid-area: ob;
+}
+
+.outline-c {
+    grid-area: oc;
+}
+
+.outline-d {
+    grid-area: od;
+}
+
+.outline-e {
+    grid-area: oe;
+}
+
+.outline-f {
+    grid-area: of;
+}
+
+.outline-g {
+    grid-area: og;
+}
+
+.outline-h {
+    grid-area: oh;
+}
+
+.outline-i {
+    grid-area: oi;
+}
+
+.outline-j {
+    grid-area: oj;
+}
+
+.outline-cel, .cel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+    background-color: rgba(0,0,0,0);
+    z-index: 1;
+}
+
+.battleship {
+    grid-area: bs;
+    display: grid;
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+}
+
+.cel {
+    border: 1px solid var(--outline-color);
+}
+
+.aside-2 {
+    grid-area: as2;
+    background-color: var(--primary-color);
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 10px;
+}
+
+.ships {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(8, 50px);
+}
+
+.template-ship, .ship {
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    background-color: var(--ship-color);
+}
+
+.shot{
+    background-color: var(--mis-color);
+}
+
+.shot.hit{
+    background-color: var(--hit-color);
+}
+
+.used{
+    opacity: 0.9;
+}
+
+.ship-hover{
+    opacity: 0.9;
+}
+
+.template-ship{
+    z-index: 2;
+}
+
+.template-patrol {
+    grid-area: 1 / 1 / 3 / 2;
+}
+
+.template-submarine {
+    grid-area: 1 / 3 / 4 / 4;
+}
+
+.template-destroyer {
+    grid-area: 1 / 5 / 4 / 6;
+}
+
+.template-battleship {
+    grid-area: 4 / 2 / 8 / 3;
+}
+
+.template-carrier {
+    grid-area: 4 / 4 / 9 / 5;
+}
+
+
+footer {
+    grid-area: ft;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
