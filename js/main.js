@@ -1,6 +1,9 @@
 const battleshipLayout = document.querySelector('.battleship');
 const templateLayout = document.querySelector('.ships');
 const templateShips = document.querySelectorAll('.template-ship');
+const welcomeDiv = document.querySelector('.welcome');
+const playerTurnDiv = document.querySelector('.player-turn');
+
 let ship = {};
 let rotation = false;
 let computer = true;
@@ -277,6 +280,13 @@ function switchPlayer() {
             } else {
                 canShoot = true;
             }
+            if (player1) {
+                playerTurnDiv.children[1].textContent = "Speler 1";
+            } else if (computer) {
+                playerTurnDiv.children[1].textContent = "Computer";
+            } else {
+                playerTurnDiv.children[1].textContent = "Speler 2";
+            }
         }, 1000);
 
         return;
@@ -330,10 +340,11 @@ function placeComputerShips() {
 function startGame() {
     gameState = true;
     switchPlayer();
-    console.log(cells);
     for (let i = 0; i < templateShips.length; i++) {
         templateShips[i].classList.remove('used');
     }
+    welcomeDiv.classList.add('hidden');
+    playerTurnDiv.classList.remove('hidden');
 }
 
 function shoot(x, y) {
@@ -401,16 +412,16 @@ function changeBoard() {
         }
     }
 
-   changeTemplateBoard();
+    changeTemplateBoard();
 }
 
-function changeTemplateBoard(){
+function changeTemplateBoard() {
     for (let i = 0; i < templateShips.length; i++) {
         templateShips[i].classList.remove('hit');
         const name = templateShips[i].classList[1].split('-').pop();
 
         for (let j = 0; j < shipsDown.length; j++) {
-            if (name === shipsDown[j].name && shipsDown[j].down && shipsDown[j].player === player1){
+            if (name === shipsDown[j].name && shipsDown[j].down && shipsDown[j].player === player1) {
                 templateShips[i].classList.add('hit');
             }
         }
