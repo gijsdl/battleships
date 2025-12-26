@@ -168,7 +168,7 @@ main {
     border: 1px solid var(--outline-color);
 }
 
-.aside-2 {
+.hit-display {
     grid-area: as2;
     background-color: var(--primary-color);
     margin-right: 50px;
@@ -196,7 +196,7 @@ main {
     background-color: var(--mis-color);
 }
 
-.shot.hit{
+.hit{
     background-color: var(--hit-color);
 }
 

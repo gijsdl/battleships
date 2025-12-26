@@ -15,8 +15,59 @@ const shipsPlaced = {
     battleship: false,
     carrier: false,
 }
-
-let ships = [];
+// Player is true for player one and false for player two. This is for a check later in the changeBoard function.
+let shipsDown = [
+    {
+        player: true,
+        name: "patrol",
+        down: false
+    },
+    {
+        player: true,
+        name: "submarine",
+        down: false
+    },
+    {
+        player: true,
+        name: "destroyer",
+        down: false
+    },
+    {
+        player: true,
+        name: "battleship",
+        down: false
+    },
+    {
+        player: true,
+        name: "carrier",
+        down: false
+    },
+    {
+        player: false,
+        name: "patrol",
+        down: false
+    },
+    {
+        player: false,
+        name: "submarine",
+        down: false
+    },
+    {
+        player: false,
+        name: "destroyer",
+        down: false
+    },
+    {
+        player: false,
+        name: "battleship",
+        down: false
+    },
+    {
+        player: false,
+        name: "carrier",
+        down: false
+    }
+];
 let cells = [];
 
 setup();
@@ -48,8 +99,8 @@ function setup() {
             });
             cellsX[j] = {
                 element: cellDiv,
-                shipP1: false,
-                shipP2: false,
+                shipP1: null,
+                shipP2: null,
                 shotP1: false,
                 shotP2: false
             };
@@ -150,9 +201,9 @@ function createShip(x, y) {
             cell.element.classList.add('ship');
         }
         if (player1) {
-            cell.shipP1 = true;
+            cell.shipP1 = ship.name;
         } else {
-            cell.shipP2 = true;
+            cell.shipP2 = ship.name;
         }
     }
 
@@ -218,16 +269,15 @@ function changeRotation(e, x, y) {
 function switchPlayer() {
     canShoot = false;
     player1 = !player1;
-    console.log(player1);
     if (gameState) {
         setTimeout(() => {
             changeBoard();
             if (computer && !player1) {
-                shootComputer();
+                setTimeout(shootComputer, 500);
             } else {
                 canShoot = true;
             }
-        }, 500);
+        }, 1000);
 
         return;
     }
@@ -280,6 +330,10 @@ function placeComputerShips() {
 function startGame() {
     gameState = true;
     switchPlayer();
+    console.log(cells);
+    for (let i = 0; i < templateShips.length; i++) {
+        templateShips[i].classList.remove('used');
+    }
 }
 
 function shoot(x, y) {
@@ -302,7 +356,7 @@ function shoot(x, y) {
         }
 
     }
-    switchPlayer();
+    checkShotSatus();
 }
 
 function shootComputer() {
@@ -321,7 +375,7 @@ function shootComputer() {
     if (cell.shipP1) {
         cell.element.classList.add('hit');
     }
-    switchPlayer();
+    checkShotSatus();
 }
 
 function changeBoard() {
@@ -345,5 +399,74 @@ function changeBoard() {
                 }
             }
         }
+    }
+
+   changeTemplateBoard();
+}
+
+function changeTemplateBoard(){
+    for (let i = 0; i < templateShips.length; i++) {
+        templateShips[i].classList.remove('hit');
+        const name = templateShips[i].classList[1].split('-').pop();
+
+        for (let j = 0; j < shipsDown.length; j++) {
+            if (name === shipsDown[j].name && shipsDown[j].down && shipsDown[j].player === player1){
+                templateShips[i].classList.add('hit');
+            }
+        }
+    }
+}
+
+function checkShotSatus() {
+    for (let i = 0; i < shipsDown.length; i++) {
+        shipsDown[i].down = true;
+    }
+    const ships = [
+        'patrol',
+        'submarine',
+        'destroyer',
+        'battleship',
+        'carrier'
+    ];
+
+
+    for (let i = 1; i < cells.length; i++) {
+        for (let j = 1; j < cells[i].length; j++) {
+            const cell = cells[i][j];
+            for (let k = 0; k < ships.length; k++) {
+                if (cell.shipP2 === ships[k] && !cell.shotP1) {
+                    shipsDown[k].down = false;
+                }
+            }
+            for (let k = 0; k < ships.length; k++) {
+                if (cell.shipP1 === ships[k] && !cell.shotP2) {
+                    shipsDown[k + 5].down = false;
+                }
+            }
+        }
+    }
+    changeTemplateBoard();
+    checkWinStatus();
+}
+
+function checkWinStatus() {
+    let winP1 = true;
+    let winP2 = true;
+    for (let i = 0; i < shipsDown.length; i++) {
+        if (!shipsDown[i].down) {
+            if (i < shipsDown.length / 2) {
+                winP1 = false;
+            } else {
+                winP2 = false;
+            }
+        }
+    }
+    // TODO: Make end screen;
+    if (winP1) {
+        alert('player one Won');
+    } else if (winP2) {
+        alert('player 2 won');
+    } else {
+        switchPlayer();
     }
 }
