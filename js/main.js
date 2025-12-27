@@ -3,6 +3,10 @@ const templateLayout = document.querySelector('.ships');
 const templateShips = document.querySelectorAll('.template-ship');
 const welcomeDiv = document.querySelector('.welcome');
 const playerTurnDiv = document.querySelector('.player-turn');
+const alertDiv = document.querySelector('.alert');
+const alertBtn = document.querySelector('.alert-btn');
+const endScreenDiv = document.querySelector('.end-screen');
+const playerWonText = document.querySelector('.playerWon');
 
 let ship = {};
 let rotation = false;
@@ -10,6 +14,7 @@ let computer = true;
 let player1 = true;
 let gameState = false;
 let canShoot = false;
+let buttonAction = 'none';
 
 const shipsPlaced = {
     patrol: false,
@@ -18,7 +23,7 @@ const shipsPlaced = {
     battleship: false,
     carrier: false,
 }
-// Player is true for player one and false for player two. This is for a check later in the changeBoard function.
+// Player is true for player one and false for player two. This is for a check later in the changeTemplateBoard function.
 let shipsDown = [
     {
         player: true,
@@ -123,26 +128,24 @@ function setup() {
     for (let i = 0; i < templateShips.length; i++) {
         templateShips[i].addEventListener('click', chooseShip);
     }
+    alertBtn.addEventListener('click', removeAlert);
 }
 
 function placeShip(x, y, computer) {
     if (ship.name === undefined && !computer) {
-        alert('Kies een schip');
-        //TODO: make better alert
+        showAlert('Let op!', 'Kies eerst een schip aan de rechterkant.');
         return false;
     }
 
     if (shipsPlaced[ship.name] && !computer) {
-        alert('Dit schip is al geplaatst');
-        //TODO: make better alert
+        showAlert('Let op!', 'Je hebt dit schip al geplaatst.');
         return false;
     }
 
     const shipObject = createShip(x, y);
     if (!shipObject) {
         if (!computer) {
-            alert('Je kan het ship niet plaatsen');
-            // TODO: make better alert
+            showAlert('Let op!', 'Je kan hier geen schip plaatsen.');
         }
         return false;
     }
@@ -166,9 +169,16 @@ function checkShipsPlaced() {
         }
     }
     if (used) {
-        alert("Alle schepen geplaatst");
-        //TODO: better alert
-        switchPlayer();
+        let alert = 'Je hebt alle schepen geplaatst. De volgende speler kan zijn schepen plaatsen';
+        if (computer) {
+            alert = 'Je hebt alle schepen geplaatst. De computer gaat zijn schepen plaatsen';
+        }
+        showAlert('Volgende stap', alert);
+        if (player1) {
+            buttonAction = 'nextPlayer';
+        } else {
+            buttonAction = 'startGame';
+        }
     }
 }
 
@@ -237,8 +247,7 @@ function removeHover() {
 
 function chooseShip(e) {
     if (e.target.classList.contains('used')) {
-        alert('Dit schip is al geplaatst');
-        //TODO: better alert
+        showAlert('Let op!', 'Je hebt dit schip al geplaatst.');
         return;
     }
     const classItem = e.target.classList[1];
@@ -332,9 +341,8 @@ function placeComputerShips() {
             }
         }
     }
-    alert("computer heeft alle schepen geplaatst");
-    // TODO: better alert
-    startGame();
+    showAlert('Volgende stap', 'De computer heeft zijn schepen geplaatst. Je kan nu gaan schieten');
+    buttonAction = 'startGame';
 }
 
 function startGame() {
@@ -354,8 +362,7 @@ function shoot(x, y) {
     const cell = cells[x][y];
     if (player1) {
         if (cell.shotP1) {
-            alert('already shot');
-            //TODO: better alert
+            showAlert('Let op!', 'Je hebt hier al geschoten.');
             return;
         }
 
@@ -472,12 +479,42 @@ function checkWinStatus() {
             }
         }
     }
-    // TODO: Make end screen;
     if (winP1) {
-        alert('player one Won');
+        showEndScreen('1');
     } else if (winP2) {
-        alert('player 2 won');
+        showEndScreen('2');
     } else {
         switchPlayer();
     }
+}
+
+function showAlert(title, alert) {
+    alertDiv.children[0].textContent = title;
+    alertDiv.children[1].textContent = alert;
+    alertDiv.classList.remove('hidden');
+}
+
+function removeAlert() {
+    alertDiv.classList.add('hidden');
+    if (buttonAction === 'nextPlayer') {
+        buttonAction = 'none';
+        switchPlayer();
+    } else if (buttonAction === 'startGame') {
+        buttonAction = 'none';
+        startGame();
+    }
+
+}
+
+function showEndScreen(playerWon) {
+    let player = '';
+    if (playerWon === 1) {
+        player = 'Speler 1'
+    } else if (computer) {
+        player = 'De computer'
+    } else {
+        player = 'Speler 2'
+    }
+    playerWonText.textContent = `${player} heeft gewonnen!`;
+    endScreenDiv.classList.remove('hidden');
 }

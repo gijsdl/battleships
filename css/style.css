@@ -6,6 +6,10 @@
     --ship-color: grey;
     --mis-color: yellow;
     --hit-color: red;
+    --btn-bg: #005BBB;
+    --btn-bg-hover: #0066CC;
+    --btn-bg-active: #004C99;
+    --btn-border: #004C99;
 }
 
 * {
@@ -45,6 +49,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: 50px;
 }
 
 .welcome, .player-turn{
@@ -249,6 +254,48 @@ main {
     grid-area: 4 / 4 / 9 / 5;
 }
 
+.alert, .end-screen{
+    grid-area: mn;
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    background-color: var(--primary-color);
+    border: 3px solid var(--outline-color);
+    box-shadow:  0 10px 28px rgba(0,0,0,0.7);
+    border-radius: 16px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-color);
+}
+
+.alert-btn{
+    appearance: none;
+    border: 1px solid var(--btn-border);
+    background-color: var(--btn-bg);
+    color: var(--text-color);
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.12), 0 6px 14px rgba(0,0,0,0.18);
+    transition: background-color 120ms ease, transform 60ms ease, box-shadow 120ms ease;
+    cursor: pointer;
+}
+
+.alert-btn:hover {
+    background-color: var(--btn-bg-hover);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.14), 0 8px 18px rgba(0,0,0,0.22);
+}
+
+.alert-btn:active {
+    background-color: var(--btn-bg-active);
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.10), 0 3px 8px rgba(0,0,0,0.16);
+}
 
 footer {
     grid-area: ft;
