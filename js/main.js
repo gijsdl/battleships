@@ -343,7 +343,7 @@ function startGame() {
     gameState = true;
     switchPlayer();
     for (let i = 0; i < templateShips.length; i++) {
-        templateShips[i].classList.remove('used');
+        templateShips[i].classList.remove('used', 'clickable');
     }
     welcomeDiv.classList.add('hidden');
     playerTurnDiv.classList.remove('hidden');
@@ -395,6 +395,9 @@ function changeBoard() {
         for (let j = 1; j < cells[i].length; j++) {
             const cell = cells[i][j];
             cell.element.classList = "cell";
+            if (!player1 && computer){
+                cell.element.classList.add('cursor-none');
+            }
             if (player1) {
                 if (cell.shotP1) {
                     cell.element.classList.add('shot');
@@ -517,10 +520,13 @@ function reset() {
     }
     for (let i = 0; i < templateShips.length; i++) {
         templateShips[i].classList.remove('hit');
+        templateShips[i].classList.add('clickable');
     }
     for (let i = 0; i < shipsDown.length; i++) {
         shipsDown[i].down = false;
     }
+    playerTurnDiv.classList.add('hidden');
+    welcomeDiv.classList.remove('hidden');
     rotation = false;
     gameState = false;
     canShoot = false;

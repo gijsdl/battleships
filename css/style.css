@@ -190,6 +190,14 @@ main {
     border: 1px solid var(--outline-color);
 }
 
+.battleship .cell{
+    cursor: pointer;
+}
+
+.battleship .cursor-none{
+    cursor: not-allowed;
+}
+
 .hit-display {
     grid-area: ht;
     background-color: var(--primary-color);
@@ -204,7 +212,7 @@ main {
 .ships {
     display: grid;
     grid-template-columns: repeat(5, 50px);
-    grid-template-rows: repeat(8, 50px);
+    grid-template-rows: repeat(10, 50px);
 }
 
 .template-ship, .ship {
@@ -221,9 +229,13 @@ main {
 .hit{
     background-color: var(--hit-color);
 }
+.clickable{
+    cursor: pointer;
+}
 
 .used{
     opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .ship-hover{
@@ -232,6 +244,12 @@ main {
 
 .template-ship{
     z-index: 2;
+    writing-mode: vertical-lr;
+    color: var(--text-color);
+    font-size: 16pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .template-patrol {
