@@ -7,6 +7,7 @@ const alertDiv = document.querySelector('.alert');
 const alertBtn = document.querySelector('.alert-btn');
 const endScreenDiv = document.querySelector('.end-screen');
 const playerWonText = document.querySelector('.playerWon');
+const resetBtn = document.querySelector('.reset-btn');
 
 let ship = {};
 let rotation = false;
@@ -15,14 +16,8 @@ let player1 = true;
 let gameState = false;
 let canShoot = false;
 let buttonAction = 'none';
+let ships = [];
 
-const shipsPlaced = {
-    patrol: false,
-    submarine: false,
-    destroyer: false,
-    battleship: false,
-    carrier: false,
-}
 // Player is true for player one and false for player two. This is for a check later in the changeTemplateBoard function.
 let shipsDown = [
     {
@@ -127,18 +122,15 @@ function setup() {
     }
     for (let i = 0; i < templateShips.length; i++) {
         templateShips[i].addEventListener('click', chooseShip);
+        ships.push(templateShips[i].classList[1].split('-').pop());
     }
     alertBtn.addEventListener('click', removeAlert);
+    resetBtn.addEventListener('click', reset);
 }
 
 function placeShip(x, y, computer) {
     if (ship.name === undefined && !computer) {
         showAlert('Let op!', 'Kies eerst een schip aan de rechterkant.');
-        return false;
-    }
-
-    if (shipsPlaced[ship.name] && !computer) {
-        showAlert('Let op!', 'Je hebt dit schip al geplaatst.');
         return false;
     }
 
@@ -151,7 +143,6 @@ function placeShip(x, y, computer) {
     }
 
     if (!computer) {
-        shipsPlaced[ship.name] = true;
         document.querySelector('.template-' + ship.name).classList.add('used');
         ship = {};
         checkShipsPlaced();
@@ -246,6 +237,9 @@ function removeHover() {
 }
 
 function chooseShip(e) {
+    if (gameState) {
+        return;
+    }
     if (e.target.classList.contains('used')) {
         showAlert('Let op!', 'Je hebt dit schip al geplaatst.');
         return;
@@ -439,15 +433,6 @@ function checkShotSatus() {
     for (let i = 0; i < shipsDown.length; i++) {
         shipsDown[i].down = true;
     }
-    const ships = [
-        'patrol',
-        'submarine',
-        'destroyer',
-        'battleship',
-        'carrier'
-    ];
-
-
     for (let i = 1; i < cells.length; i++) {
         for (let j = 1; j < cells[i].length; j++) {
             const cell = cells[i][j];
@@ -508,7 +493,7 @@ function removeAlert() {
 
 function showEndScreen(playerWon) {
     let player = '';
-    if (playerWon === 1) {
+    if (playerWon === '1') {
         player = 'Speler 1'
     } else if (computer) {
         player = 'De computer'
@@ -517,4 +502,29 @@ function showEndScreen(playerWon) {
     }
     playerWonText.textContent = `${player} heeft gewonnen!`;
     endScreenDiv.classList.remove('hidden');
+}
+
+function reset() {
+    for (let i = 1; i < cells.length; i++) {
+        for (let j = 1; j < cells[i].length; j++) {
+            const cell = cells[i][j];
+            cell.element.classList.remove('shot', 'hit');
+            cell.shipP1 = null;
+            cell.shipP2 = null;
+            cell.shotP1 = false;
+            cell.shotP2 = false;
+        }
+    }
+    for (let i = 0; i < templateShips.length; i++) {
+        templateShips[i].classList.remove('hit');
+    }
+    for (let i = 0; i < shipsDown.length; i++) {
+        shipsDown[i].down = false;
+    }
+    rotation = false;
+    gameState = false;
+    canShoot = false;
+    buttonAction = 'none';
+    player1 = true;
+    endScreenDiv.classList.add('hidden');
 }
