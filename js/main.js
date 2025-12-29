@@ -2,6 +2,9 @@ const battleshipLayout = document.querySelector('.battleship');
 const templateLayout = document.querySelector('.ships');
 const templateShips = document.querySelectorAll('.template-ship');
 const welcomeDiv = document.querySelector('.welcome');
+const startInfoDiv = document.querySelector('.start-info');
+const onePlayerBtn = document.querySelector('.one-player');
+const twoPlayersBtn = document.querySelector('.two-players');
 const playerTurnDiv = document.querySelector('.player-turn');
 const alertDiv = document.querySelector('.alert');
 const alertBtn = document.querySelector('.alert-btn');
@@ -13,10 +16,11 @@ let ship = {};
 let rotation = false;
 let computer = true;
 let player1 = true;
-let gameState = false;
+let gameState = 'off';
 let canShoot = false;
 let buttonAction = 'none';
 let ships = [];
+let startShooting = true;
 
 // Player is true for player one and false for player two. This is for a check later in the changeTemplateBoard function.
 let shipsDown = [
@@ -85,9 +89,9 @@ function setup() {
             cellDiv.style.gridArea = `${j} / ${i} / ${j + 1} / ${i + 1}`;
             battleshipLayout.appendChild(cellDiv);
             cellDiv.addEventListener('click', () => {
-                if (gameState) {
+                if (gameState === "shoot") {
                     shoot(i, j);
-                } else {
+                } else if (gameState === 'place') {
                     placeShip(i, j, false);
                 }
             });
@@ -95,7 +99,7 @@ function setup() {
                 hoverShip(i, j);
             });
             cellDiv.addEventListener('mouseout', () => {
-                removeHover();
+                removeHover(i,j);
             });
             cellDiv.addEventListener('contextmenu', (e) => {
                 changeRotation(e, i, j);
@@ -124,8 +128,22 @@ function setup() {
         templateShips[i].addEventListener('click', chooseShip);
         ships.push(templateShips[i].classList[1].split('-').pop());
     }
+    onePlayerBtn.addEventListener('click', () => {
+        startPlacement(1);
+    });
+    twoPlayersBtn.addEventListener('click', () => {
+        startPlacement(2);
+    });
     alertBtn.addEventListener('click', removeAlert);
     resetBtn.addEventListener('click', reset);
+}
+
+function startPlacement(numberOfPlayers) {
+    computer = numberOfPlayers === 1;
+    startInfoDiv.classList.remove('hidden');
+    startInfoDiv.children[0].textContent = "Speler 1";
+    welcomeDiv.classList.add('hidden');
+    gameState = 'place';
 }
 
 function placeShip(x, y, computer) {
@@ -160,9 +178,13 @@ function checkShipsPlaced() {
         }
     }
     if (used) {
-        let alert = 'Je hebt alle schepen geplaatst. De volgende speler kan zijn schepen plaatsen';
-        if (computer) {
+        let alert = ""
+        if (player1) {
+            alert = 'Je hebt alle schepen geplaatst. De volgende speler kan zijn schepen plaatsen';
+        } else if (computer) {
             alert = 'Je hebt alle schepen geplaatst. De computer gaat zijn schepen plaatsen';
+        } else {
+            alert = "Je hebt alle schepen geplaatst. Start het spel"
         }
         showAlert('Volgende stap', alert);
         if (player1) {
@@ -229,7 +251,7 @@ function hoverShip(x, y) {
 
 }
 
-function removeHover() {
+function removeHover(x,y) {
     const hover = document.querySelectorAll('.ship-hover');
     for (let i = 0; i < hover.length; i++) {
         battleshipLayout.removeChild(hover[i]);
@@ -237,7 +259,7 @@ function removeHover() {
 }
 
 function chooseShip(e) {
-    if (gameState) {
+    if (gameState !== "place") {
         return;
     }
     if (e.target.classList.contains('used')) {
@@ -267,15 +289,23 @@ function chooseShip(e) {
 
 function changeRotation(e, x, y) {
     e.preventDefault()
-    rotation = !rotation;
-    removeHover();
-    hoverShip(x, y);
+    if (gameState === 'place') {
+        rotation = !rotation;
+        removeHover();
+        hoverShip(x, y);
+    }
 }
 
 function switchPlayer() {
     canShoot = false;
     player1 = !player1;
-    if (gameState) {
+
+    if (gameState === 'shoot') {
+        let timeout = 1000;
+        if (startShooting){
+            timeout = 0;
+        }
+        startShooting = false;
         setTimeout(() => {
             changeBoard();
             if (computer && !player1) {
@@ -290,12 +320,22 @@ function switchPlayer() {
             } else {
                 playerTurnDiv.children[1].textContent = "Speler 2";
             }
-        }, 1000);
+        }, timeout);
 
         return;
     }
     if (computer) {
         placeComputerShips();
+        return;
+    }
+    startInfoDiv.children[0].textContent = "Speler 2";
+    for (let i = 0; i < templateShips.length; i++) {
+        templateShips[i].classList.remove('used');
+    }
+    for (let i = 1; i < cells.length; i++) {
+        for (let j = 1; j < cells[i].length; j++) {
+            cells[i][j].element.classList.remove('ship');
+        }
     }
 }
 
@@ -340,12 +380,12 @@ function placeComputerShips() {
 }
 
 function startGame() {
-    gameState = true;
+    gameState = 'shoot';
     switchPlayer();
     for (let i = 0; i < templateShips.length; i++) {
         templateShips[i].classList.remove('used', 'clickable');
     }
-    welcomeDiv.classList.add('hidden');
+    startInfoDiv.classList.add('hidden');
     playerTurnDiv.classList.remove('hidden');
 }
 
@@ -367,6 +407,18 @@ function shoot(x, y) {
             cells[x][y].element.classList.add('hit');
         }
 
+    } else {
+        if (cell.shotP2) {
+            showAlert('Let op!', 'Je hebt hier al geschoten.');
+            return;
+        }
+
+        cell.shotP2 = true;
+        cells[x][y].element.classList.add('shot');
+
+        if (cell.shipP1) {
+            cells[x][y].element.classList.add('hit');
+        }
     }
     checkShotSatus();
 }
@@ -395,8 +447,10 @@ function changeBoard() {
         for (let j = 1; j < cells[i].length; j++) {
             const cell = cells[i][j];
             cell.element.classList = "cell";
-            if (!player1 && computer){
+            if (!player1 && computer) {
                 cell.element.classList.add('cursor-none');
+            }else {
+                cell.element.classList.add('active');
             }
             if (player1) {
                 if (cell.shotP1) {
@@ -511,7 +565,7 @@ function reset() {
     for (let i = 1; i < cells.length; i++) {
         for (let j = 1; j < cells[i].length; j++) {
             const cell = cells[i][j];
-            cell.element.classList.remove('shot', 'hit');
+            cell.element.classList = "cell";
             cell.shipP1 = null;
             cell.shipP2 = null;
             cell.shotP1 = false;
@@ -528,9 +582,10 @@ function reset() {
     playerTurnDiv.classList.add('hidden');
     welcomeDiv.classList.remove('hidden');
     rotation = false;
-    gameState = false;
+    gameState = 'off';
     canShoot = false;
     buttonAction = 'none';
     player1 = true;
     endScreenDiv.classList.add('hidden');
+    startShooting = true;
 }
