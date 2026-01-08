@@ -62,7 +62,7 @@ header {
     margin-left: 50px;
 }
 
-.welcome, .start-info, .player-turn{
+.welcome, .difficulty, .start-info, .player-turn{
     display: flex;
     flex-direction: column;
     justify-content: center;

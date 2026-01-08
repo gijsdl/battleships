@@ -5,6 +5,8 @@ const welcomeDiv = document.querySelector('.welcome');
 const startInfoDiv = document.querySelector('.start-info');
 const onePlayerBtn = document.querySelector('.one-player');
 const twoPlayersBtn = document.querySelector('.two-players');
+const difficultyDiv = document.querySelector('.difficulty');
+const difficultyBtns = document.querySelectorAll('.difficulty-btn');
 const playerTurnDiv = document.querySelector('.player-turn');
 const alertDiv = document.querySelector('.alert');
 const alertBtn = document.querySelector('.alert-btn');
@@ -15,7 +17,7 @@ const resetBtn = document.querySelector('.reset-btn');
 let ship = {};
 let rotation = false;
 let computer = true;
-let difficulty = 100;
+let difficulty = 0;
 let lastHits = [];
 let direction = null;
 let flippedDirection = false;
@@ -132,14 +134,26 @@ function setup() {
         templateShips[i].addEventListener('click', chooseShip);
         ships.push(templateShips[i].classList[1].split('-').pop());
     }
-    onePlayerBtn.addEventListener('click', () => {
-        startPlacement(1);
-    });
+    onePlayerBtn.addEventListener('click', askDifficulty);
     twoPlayersBtn.addEventListener('click', () => {
         startPlacement(2);
     });
+    for (let i = 0; i < difficultyBtns.length; i++){
+        difficultyBtns[i].addEventListener('click', startWithDifficulty);
+    }
     alertBtn.addEventListener('click', removeAlert);
     resetBtn.addEventListener('click', reset);
+}
+
+function askDifficulty(){
+    difficultyDiv.classList.remove('hidden');
+    welcomeDiv.classList.add('hidden');
+}
+
+function startWithDifficulty(e){
+    difficulty = e.target.value;
+    startPlacement(1);
+    console.log(difficulty);
 }
 
 function startPlacement(numberOfPlayers) {
@@ -147,6 +161,7 @@ function startPlacement(numberOfPlayers) {
     startInfoDiv.classList.remove('hidden');
     startInfoDiv.children[0].textContent = "Speler 1";
     welcomeDiv.classList.add('hidden');
+    difficultyDiv.classList.add('hidden');
     gameState = 'place';
 }
 
@@ -426,8 +441,6 @@ function shoot(x, y) {
     }
     checkShotSatus();
 }
-// TODO:remove
-let first = true;
 
 function shootComputer() {
 
@@ -435,14 +448,7 @@ function shootComputer() {
     let cell = null
     let cellLocation = null;
     if (random > difficulty || lastHits.length === 0) {
-        // TODO: remove if
-        if (first) {
-            first = false;
-            cellLocation = {x: 9, y: 1};
-        }
-        else {
-            cellLocation = randomShoot();
-        }
+        cellLocation = {x: 9, y: 3};
     } else {
         cellLocation = thinkShoot();
     }
@@ -470,8 +476,7 @@ function thinkShoot() {
     let cellLocation = {x: 0, y: 0};
     while (!shoot) {
         if (direction === null) {
-            // direction = Math.ceil(Math.random() * 4);
-            direction = 2;
+            direction = Math.ceil(Math.random() * 4);
         }
         const lastHit = lastHits[lastHits.length - 1];
         if (direction === 1) {
@@ -502,16 +507,6 @@ function thinkShoot() {
         const cell = cells[cellLocation.x][cellLocation.y];
         if (!cell.shotP2) {
             shoot = true;
-        } else if (cell.shipP1) {
-            let shipDown = false;
-            for (let i = 5; i < shipsDown.length; i++) {
-                if (shipsDown[i].name === cell.shipP1 && shipsDown[i].down) {
-                    shipDown = true;
-                }
-            }
-            if (shipDown) {
-                direction = null;
-            }
         } else {
             direction = null;
         }
@@ -527,10 +522,10 @@ function flipDirection() {
         if (direction > 4) {
             direction -= 4;
         }
-    }else {
+    } else {
         flippedDirection = false;
         direction++;
-        if (direction > 4){
+        if (direction > 4) {
             direction = 1;
         }
     }
@@ -597,7 +592,7 @@ function changeTemplateBoard() {
 
 function checkShotSatus() {
     oldShipsDown = [];
-    for (let i = 5; i<shipsDown.length; i++){
+    for (let i = 5; i < shipsDown.length; i++) {
         oldShipsDown.push(shipsDown[i].down);
     }
     for (let i = 0; i < shipsDown.length; i++) {
@@ -621,7 +616,6 @@ function checkShotSatus() {
     if (computer) {
         for (let i = 0; i < oldShipsDown.length; i++) {
             if (oldShipsDown[i] !== shipsDown[i + 5].down) {
-                console.log('down');
                 lastHits = [];
                 direction = null;
                 flippedDirection = false;
