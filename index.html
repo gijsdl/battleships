@@ -9,90 +9,92 @@
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-<div class="wrapper">
-    <header>
-        <img src="img/logo.png" alt="logo">
-        <h1>Battleships</h1>
-    </header>
-    <section class="info">
-        <div class="welcome">
-            <h2>Welkom</h2>
-            <p>Hoeveel spelers zijn er?</p>
-            <button class="one-player">1 Speler</button>
-            <button class="two-players">2 Spelers</button>
-        </div>
-        <div class="difficulty hidden">
-            <h2>Hoe moeilijk wilt u de computer</h2>
-            <div>
-                <button class="difficulty-btn" value="30">Makkelijk</button>
-                <button class="difficulty-btn" value="70">Gemiddeld</button>
-                <button class="difficulty-btn" value="100">Moeilijk</button>
+    <div class="wrapper">
+        <header>
+            <img src="img/logo.png" alt="logo">
+            <h1>Battleships</h1>
+        </header>
+        <section class="info">
+            <div class="welcome">
+                <h2>Welkom</h2>
+                <p>Hoeveel spelers zijn er?</p>
+                <div class="button-group">
+                    <button class="one-player">1 Speler</button>
+                    <button class="two-players">2 Spelers</button>
+                </div>
             </div>
-        </div>
-        <div class="start-info hidden">
-            <h2>Speler 1</h2>
-            <p>Klik op een schip aan de rechterkant en plaats deze op het boord.</p>
-            <p> Je kunt de rechtermuisknop gebruiken om je schip te draaien.</p>
-            <p>Als je alles schepen hebt geplaatst dan gaat de volgende speler de schepen plaatsen.</p>
-        </div>
-        <div class="player-turn hidden">
-            <p>Aan de beurt:</p>
-            <h2>Speler 1</h2>
-            <p>Aan de rechterkant zie je welke schepen je al hebt laten zinken</p>
-        </div>
-    </section>
-    <main>
-        <div class="outline">
-            <div class="outline-cell empty"></div>
-            <div class="outline-cell outline-1">1</div>
-            <div class="outline-cell outline-2">2</div>
-            <div class="outline-cell outline-3">3</div>
-            <div class="outline-cell outline-4">4</div>
-            <div class="outline-cell outline-5">5</div>
-            <div class="outline-cell outline-6">6</div>
-            <div class="outline-cell outline-7">7</div>
-            <div class="outline-cell outline-8">8</div>
-            <div class="outline-cell outline-9">9</div>
-            <div class="outline-cell outline-10">10</div>
-            <div class="outline-cell outline-a">A</div>
-            <div class="outline-cell outline-b">B</div>
-            <div class="outline-cell outline-c">C</div>
-            <div class="outline-cell outline-d">D</div>
-            <div class="outline-cell outline-e">E</div>
-            <div class="outline-cell outline-f">F</div>
-            <div class="outline-cell outline-g">G</div>
-            <div class="outline-cell outline-h">H</div>
-            <div class="outline-cell outline-i">I</div>
-            <div class="outline-cell outline-j">J</div>
-            <div class="battleship">
+            <div class="difficulty hidden">
+                <h2>Hoe moeilijk wilt u de computer</h2>
+                <div class="button-group">
+                    <button class="difficulty-btn" value="30">Makkelijk</button>
+                    <button class="difficulty-btn" value="70">Gemiddeld</button>
+                    <button class="difficulty-btn" value="100">Moeilijk</button>
+                </div>
             </div>
-        </div>
-    </main>
-    <section class="alert hidden">
-        <h2>Alert</h2>
-        <p>Melding</p>
-        <button class="alert-btn">Oke</button>
-    </section>
-    <section class="end-screen hidden">
-        <h2>Einde spel</h2>
-        <p class="playerWon"></p>
-        <p>gefeliciteerd!!!</p>
-        <button class="reset-btn">Opnieuw</button>
-    </section>
-    <section class="hit-display">
-        <h3>ships</h3>
-        <div class="ships">
-            <div class="template-ship template-patrol clickable">Patrouille</div>
-            <div class="template-ship template-submarine clickable">onderzeeër</div>
-            <div class="template-ship template-destroyer clickable">torpedobootjager</div>
-            <div class="template-ship template-battleship clickable">slagschip</div>
-            <div class="template-ship template-carrier clickable">vliegdekschip</div>
-        </div>
-    </section>
-    <footer>
-        &copy; de Lange
-    </footer>
-</div>
-<script src="js/main.js"></script>
+            <div class="start-info hidden">
+                <h2>Speler 1</h2>
+                <p>Klik op een schip aan de rechterkant en plaats deze op het boord.</p>
+                <p> Je kunt de rechtermuisknop gebruiken om je schip te draaien.</p>
+                <p>Als je alles schepen hebt geplaatst dan gaat de volgende speler de schepen plaatsen.</p>
+            </div>
+            <div class="player-turn hidden">
+                <p>Aan de beurt:</p>
+                <h2>Speler 1</h2>
+                <p>Aan de rechterkant zie je welke schepen je al hebt laten zinken</p>
+            </div>
+        </section>
+        <main>
+            <div class="outline">
+                <div class="outline-cell empty"></div>
+                <div class="outline-cell outline-1">1</div>
+                <div class="outline-cell outline-2">2</div>
+                <div class="outline-cell outline-3">3</div>
+                <div class="outline-cell outline-4">4</div>
+                <div class="outline-cell outline-5">5</div>
+                <div class="outline-cell outline-6">6</div>
+                <div class="outline-cell outline-7">7</div>
+                <div class="outline-cell outline-8">8</div>
+                <div class="outline-cell outline-9">9</div>
+                <div class="outline-cell outline-10">10</div>
+                <div class="outline-cell outline-a">A</div>
+                <div class="outline-cell outline-b">B</div>
+                <div class="outline-cell outline-c">C</div>
+                <div class="outline-cell outline-d">D</div>
+                <div class="outline-cell outline-e">E</div>
+                <div class="outline-cell outline-f">F</div>
+                <div class="outline-cell outline-g">G</div>
+                <div class="outline-cell outline-h">H</div>
+                <div class="outline-cell outline-i">I</div>
+                <div class="outline-cell outline-j">J</div>
+                <div class="battleship">
+                </div>
+            </div>
+        </main>
+        <section class="alert hidden">
+            <h2>Alert</h2>
+            <p>Melding</p>
+            <button class="alert-btn">Oke</button>
+        </section>
+        <section class="end-screen hidden">
+            <h2>Einde spel</h2>
+            <p class="playerWon"></p>
+            <p>gefeliciteerd!!!</p>
+            <button class="reset-btn">Opnieuw</button>
+        </section>
+        <section class="hit-display">
+            <h3>ships</h3>
+            <div class="ships">
+                <div class="template-ship template-patrol clickable">Patrouille</div>
+                <div class="template-ship template-submarine clickable">onderzeeër</div>
+                <div class="template-ship template-destroyer clickable">torpedobootjager</div>
+                <div class="template-ship template-battleship clickable">slagschip</div>
+                <div class="template-ship template-carrier clickable">vliegdekschip</div>
+            </div>
+        </section>
+        <footer>
+            &copy; de Lange
+        </footer>
+    </div>
+    <script src="js/main.js"></script>
 </body>
 </html>
