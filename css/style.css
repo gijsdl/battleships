@@ -28,13 +28,18 @@ h2 {
     font-size: 1.2rem;
 }
 
+body{
+    background-color: var(--secondary-color);
+}
+
 header img {
     width: 50px;
 }
 
 .wrapper {
+    padding: 20px;
     display: grid;
-    grid-template-rows: 50px 100px 300px 300px 50px;
+    grid-template-rows: 50px 150px 300px 300px 50px;
     grid-auto-columns: 1fr;
     grid-template-areas:
     "hd"
@@ -42,8 +47,6 @@ header img {
     "mn"
     "ht"
     "ft";
-    /*height: 100vh;*/
-    background-color: var(--secondary-color);
     gap: 10px;
 }
 
@@ -61,6 +64,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 5px;
 }
 
 .welcome, .difficulty, .start-info, .player-turn {
@@ -229,7 +233,7 @@ main {
 }
 
 .ships {
-    width: 80%;
+    width: 50%;
     height: 100%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -370,14 +374,19 @@ footer {
     }
 
     .wrapper {
+        padding: 0;
         height: 100vh;
         grid-template-columns:50px 2fr 1fr 50px;
-        grid-template-rows: 100px 100px 400px 50px;
+        grid-template-rows: 100px 100px 350px 50px;
         grid-template-areas:
         "hd hd hd hd"
         ". if if ."
         ". mn ht ."
         "ft ft ft ft";
+    }
+
+    .ships{
+        width: 80%;
     }
 }
 

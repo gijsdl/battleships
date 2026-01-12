@@ -138,22 +138,21 @@ function setup() {
     twoPlayersBtn.addEventListener('click', () => {
         startPlacement(2);
     });
-    for (let i = 0; i < difficultyBtns.length; i++){
+    for (let i = 0; i < difficultyBtns.length; i++) {
         difficultyBtns[i].addEventListener('click', startWithDifficulty);
     }
     alertBtn.addEventListener('click', removeAlert);
     resetBtn.addEventListener('click', reset);
 }
 
-function askDifficulty(){
+function askDifficulty() {
     difficultyDiv.classList.remove('hidden');
     welcomeDiv.classList.add('hidden');
 }
 
-function startWithDifficulty(e){
-    difficulty = e.target.value;
+function startWithDifficulty(e) {
+    difficulty = parseInt(e.target.value);
     startPlacement(1);
-    console.log(difficulty);
 }
 
 function startPlacement(numberOfPlayers) {
@@ -447,10 +446,20 @@ function shootComputer() {
     const random = Math.ceil(Math.random() * 100);
     let cell = null
     let cellLocation = null;
-    if (random > difficulty || lastHits.length === 0) {
-        cellLocation = {x: 9, y: 3};
+    if (random > difficulty) {
+        cellLocation = randomShoot();
     } else {
-        cellLocation = thinkShoot();
+        if (lastHits.length === 0) {
+            const otherTarget = getUnsunkenShips();
+            if (otherTarget) {
+                lastHits.push(otherTarget);
+                cellLocation = thinkShoot();
+            } else {
+                cellLocation = randomShoot();
+            }
+        } else {
+            cellLocation = thinkShoot();
+        }
     }
     cell = cells[cellLocation.x][cellLocation.y];
     cell.shotP2 = true;
@@ -469,6 +478,21 @@ function shootComputer() {
         }
     }
     checkShotSatus();
+}
+
+function getUnsunkenShips() {
+    for (let i = 1; i < cells.length; i++) {
+        for (let j = 1; j < cells[i].length; j++) {
+            for (let k = 5; k < shipsDown.length; k++) {
+
+                if (cells[i][j].shipP1 === shipsDown[k].name && cells[i][j].shotP2 && !shipsDown[k].down) {
+                    return {x: i, y: j};
+                }
+
+            }
+        }
+    }
+    return null;
 }
 
 function thinkShoot() {
